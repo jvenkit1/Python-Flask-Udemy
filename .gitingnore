@@ -5,5 +5,8 @@
 .metadata
 .DS_Store
 *.log
+*.txt
+*.pub
+*.txt.pub
 __pycache__
 venv
