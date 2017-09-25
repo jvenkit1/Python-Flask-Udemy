@@ -2,6 +2,8 @@ import os
 from flask import Flask, url_for, request, render_template, redirect, flash, make_response, session
 import logging
 from logging.handlers import RotatingFileHandler
+import pymysql
+import ConfigParser
 
 app = Flask(__name__)
 
@@ -49,9 +51,26 @@ def logout():
         session.pop('username', None)
         return redirect(url_for('login'))
 
-def validate_user(username, password):
-    if username == password:
+def validate_user(username, pwd):
+
+    config = ConfigParser.RawConfigParser()
+    config.read('ConfigFile.properties')
+    #print config.get('DatabaseSection', 'database.dbname');
+    MYSQL_DATABASE_HOST = os.getenv(config.get('DatabaseSection', 'database.dbIP'),config.get('DatabaseSection', 'database.dbHost'))
+    MYSQL_DATABASE_USER = config.get('DatabaseSection', 'database.dbuser')
+    MYSQL_DATABASE_PASSWORD = config.get('DatabaseSection', 'database.dbpwd')
+    MYSQL_DATABASE_DB = config.get('DatabaseSection','database.dbname')
+    print MYSQL_DATABASE_DB, MYSQL_DATABASE_HOST, MYSQL_DATABASE_USER, MYSQL_DATABASE_PASSWORD
+    conn = pymysql.connect(host = MYSQL_DATABASE_HOST, user = MYSQL_DATABASE_USER, password = MYSQL_DATABASE_PASSWORD, db = MYSQL_DATABASE_DB)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM user WHERE user_name = '%s' AND password = '%s'" % (username, pwd))
+    print username, pwd
+    data = cursor.fetchone()
+    if data:
+        print 'True'
         return True
+    print 'False'
+    print data
     return False
 
 if __name__ == '__main__':
