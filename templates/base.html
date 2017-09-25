@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+  {% block head%}
+  <title>{% block title %}{% endblock %} - CISCO Services</title>
+  {% endblock %}
+</head>
+
+<body>
+  <div id = 'logo'>
+    <img src = "{{ url_for('static', filename = 'Logo.png') }}" alt = "CISCO India" height = "150px" />
+  </div>
+  <h1>CISCO India</h1>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <div id = "messages">
+    <ul class = "flashes">
+      {% for message in messages %}
+      <li>{{message}}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+  {% endwith %}
+
+  <div id = "content">
+    {% block content %}{% endblock %}
+  </div>
+
+  <footer>
+    {% block footer %}
+    &copy; Copyright 2017 by CISCO India.
+    {% endblock %}
+  </footer>
+
+</body>
+</html>
